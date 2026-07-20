@@ -8,9 +8,6 @@ version = "0.0.1"
 description = "Environment for the 2026 VIPER Summer School"
 requires-python = ">=3.11"
 
-[tool.uv.extra-build-dependencies]
-holodeck-gw = ["setuptools", "wheel", "numpy"]
-
 dependencies = [
     "enterprise-pulsar",
     "enterprise-extensions",
@@ -25,7 +22,7 @@ dependencies = [
     "jug-timing",
     "numba>=0.60",
     "llvmlite>=0.43",
-    "notebook"
+    "numpy",
 ]
 
 [tool.uv.sources]
@@ -33,10 +30,16 @@ defiant = { git = "https://github.com/GersbachKa/defiant" }
 holodeck-gw = { git = "https://github.com/nanograv/holodeck", branch = "dev" }
 jug-timing = { git = "https://github.com/MattTMiles/jug.git", branch = "test_dep" }
 
+# holodeck-gw builds with setuptools + Cython + numpy but does not declare them
+# as build dependencies. Inject them into uv's isolated build environment so the
+# build backend can find them. (Do NOT also set no-build-isolation-package here:
+# that disables the isolated env these deps are installed into, which breaks the
+# build with "ModuleNotFoundError: No module named 'setuptools'".)
+[tool.uv.extra-build-dependencies]
+holodeck-gw = ["setuptools", "wheel", "numpy"]
 
 [tool.hatch.build.targets.wheel]
 packages = []
 
 [tool.uv]
 package = false
-no-build-isolation-package = ["holodeck-gw"]
