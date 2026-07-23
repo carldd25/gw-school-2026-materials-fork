@@ -26,6 +26,7 @@ dependencies = [
     "discovery",
     "quickcw",
     "zuko",
+    "sbi>=0.26.1",
 ]
 
 [tool.uv.sources]
